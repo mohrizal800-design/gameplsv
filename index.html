@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Misi Brankas: PLSV (Edisi Papan Interaktif)</title>
+    <title>Misi Brankas: PLSV (Fit Screen)</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;900&family=Fira+Code:wght@500;700&display=swap');
 
@@ -17,151 +17,151 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            overflow: hidden; /* Mencegah layar tergeser/scroll */
+            overflow: hidden; /* Kunci layar agar tidak bisa di-scroll */
             background-image: radial-gradient(circle at 50% 0%, #1e293b 0%, #020617 100%);
-            touch-action: none; /* Mencegah zoom/scroll tidak sengaja di Papan Interaktif */
+            touch-action: none; 
         }
 
         .panel {
-            background: rgba(15, 23, 42, 0.9);
-            backdrop-filter: blur(12px);
-            border-radius: 24px;
-            padding: 2vw 3vw;
-            box-shadow: 0 25px 50px -12px rgba(0,0,0,0.8), inset 0 0 20px rgba(56,189,248,0.2);
+            background: rgba(15, 23, 42, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 3vh;
+            padding: 3vh 3vw;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.8), inset 0 0 15px rgba(56,189,248,0.2);
             text-align: center;
-            max-width: 1200px; /* Diperlebar untuk Papan Interaktif */
-            width: 95%;
+            width: 95vw;
+            height: 95vh; /* Memaksa tinggi panel maksimal 95% dari tinggi layar */
+            max-width: 1200px;
             display: none;
             flex-direction: column;
-            border: 3px solid #334155;
+            border: 0.5vh solid #334155;
             position: relative;
-            max-height: 95vh;
-            justify-content: center;
+            justify-content: space-between; /* Menyebar isi panel secara merata atas-bawah */
         }
 
-        .active-screen { display: flex; animation: slideUp 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
-        @keyframes slideUp { from { opacity: 0; transform: translateY(40px) scale(0.98); } to { opacity: 1; transform: translateY(0) scale(1); } }
+        .active-screen { display: flex; animation: fadeIn 0.4s ease-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: scale(0.98); } to { opacity: 1; transform: scale(1); } }
 
-        h1 { color: #38bdf8; font-size: 3.5vw; margin-bottom: 10px; line-height: 1.1;}
-        h2 { color: #fbbf24; font-size: 2.2vw; margin-bottom: 15px; }
+        /* --- UKURAN TEKS ADAPTIF (MENGGUNAKAN vh) --- */
+        h1 { color: #38bdf8; font-size: 6vh; margin-bottom: 1vh; line-height: 1.1; text-shadow: 0 0 2vh rgba(56,189,248,0.5);}
+        h2 { color: #fbbf24; font-size: 3.5vh; margin-bottom: 2vh; }
+        p { font-size: 2.5vh; color: #e2e8f0; margin-bottom: 3vh; line-height: 1.4; }
 
         .btn {
             background: linear-gradient(135deg, #2563eb, #1e40af);
-            color: white; border: none; padding: 20px 40px; font-size: 1.8rem;
-            border-radius: 50px; cursor: pointer; font-weight: 900;
-            transition: all 0.2s; box-shadow: 0 10px 20px rgba(37,99,235,0.4);
-            text-transform: uppercase; margin: 10px 0; touch-action: manipulation;
+            color: white; border: none; 
+            padding: 2vh 4vw; 
+            font-size: 3.5vh; 
+            border-radius: 5vh; cursor: pointer; font-weight: 900;
+            box-shadow: 0 1vh 2vh rgba(37,99,235,0.4);
+            text-transform: uppercase; touch-action: manipulation;
+            width: 100%; transition: 0.1s;
         }
-        .btn:hover { filter: brightness(1.2); transform: translateY(-3px); box-shadow: 0 15px 25px rgba(37,99,235,0.6); }
         .btn:active { transform: scale(0.95); }
-        .btn.success { background: linear-gradient(135deg, #10b981, #047857); box-shadow: 0 10px 20px rgba(16, 185, 129, 0.4); }
-        .btn.warning { background: linear-gradient(135deg, #f59e0b, #b45309); box-shadow: 0 10px 20px rgba(245, 158, 11, 0.4); }
-        .btn.danger { background: linear-gradient(135deg, #ef4444, #991b1b); box-shadow: 0 10px 20px rgba(239, 68, 68, 0.4); }
-        .btn:disabled { background: #334155; color: #94a3b8; cursor: not-allowed; box-shadow: none; filter: none; transform: none;}
+        .btn.success { background: linear-gradient(135deg, #10b981, #047857); box-shadow: 0 1vh 2vh rgba(16, 185, 129, 0.4); }
+        .btn.warning { background: linear-gradient(135deg, #f59e0b, #b45309); box-shadow: 0 1vh 2vh rgba(245, 158, 11, 0.4); }
+        .btn.danger { background: linear-gradient(135deg, #ef4444, #991b1b); box-shadow: 0 1vh 2vh rgba(239, 68, 68, 0.4); }
+        .btn:disabled { background: #334155; color: #94a3b8; cursor: not-allowed; box-shadow: none;}
         
-        .input-group { margin-bottom: 30px; text-align: left; background: #1e293b; padding: 20px; border-radius: 15px; border: 2px solid #475569;}
-        .input-group label { display: block; font-weight: bold; margin-bottom: 15px; font-size: 1.5rem; color: #cbd5e1;}
-        .input-group input { width: 100%; padding: 20px; border-radius: 12px; border: 3px solid #3b82f6; font-size: 1.8rem; background: #0f172a; color: white; outline: none; font-weight: bold;}
-        .input-group input:focus { border-color: #fbbf24; box-shadow: 0 0 15px rgba(251, 191, 36, 0.4);}
+        .input-group { background: #1e293b; padding: 3vh; border-radius: 2vh; border: 0.3vh solid #475569; margin-bottom: 3vh; text-align: left;}
+        .input-group label { display: block; font-weight: bold; margin-bottom: 1vh; font-size: 2.5vh; color: #cbd5e1;}
+        .input-group input { width: 100%; padding: 2vh; border-radius: 1.5vh; border: 0.4vh solid #3b82f6; font-size: 3vh; background: #0f172a; color: white; outline: none; font-weight: bold;}
 
-        /* HUD */
-        .hud { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; font-size: 1.8rem; font-weight: 900; background: #020617; padding: 15px 30px; border-radius: 15px; border: 2px solid #334155;}
+        /* --- GAME LAYOUT --- */
+        .hud { 
+            display: flex; justify-content: space-between; align-items: center; 
+            font-size: 3vh; font-weight: 900; background: #020617; 
+            padding: 1.5vh 2vw; border-radius: 2vh; border: 0.3vh solid #334155;
+            margin-bottom: 1.5vh;
+        }
         .hud-score { color: #fbbf24; }
 
-        /* Game Area - 2 Kolom untuk Papan Interaktif Mendatar */
-        .vault-container {
-            display: grid;
-            grid-template-columns: 1fr 1.2fr; /* Proporsi Kiri (Kontrol) dan Kanan (Kalkulasi) */
-            gap: 30px;
-            background: #020617; border: 4px solid #475569; border-radius: 20px;
-            padding: 30px; margin-bottom: 20px; position: relative;
-            box-shadow: inset 0 0 30px rgba(0,0,0,0.8);
-            align-items: center;
+        .game-content {
+            display: flex; gap: 2vw; flex: 1; min-height: 0; /* min-height 0 penting untuk flexbox */
+            margin-bottom: 2vh;
         }
 
-        .vault-left { display: flex; flex-direction: column; justify-content: center; align-items: center; }
-        .vault-right { display: flex; flex-direction: column; justify-content: center; height: 100%; }
+        /* Kiri: Kontrol Persamaan */
+        .vault-left { 
+            flex: 1; background: #020617; border: 0.4vh solid #475569; border-radius: 3vh; 
+            padding: 2vh; display: flex; flex-direction: column; justify-content: center; align-items: center;
+            box-shadow: inset 0 0 3vh rgba(0,0,0,0.8);
+        }
 
         .equation-display {
-            font-family: 'Fira Code', monospace; font-size: 3.5vw; font-weight: bold;
-            color: #38bdf8; margin-bottom: 10px; letter-spacing: 2px; text-shadow: 0 0 20px rgba(56,189,248,0.5);
-            background: #0f172a; padding: 15px 30px; border-radius: 15px; border: 2px solid #38bdf8; width: 100%;
+            font-family: 'Fira Code', monospace; font-size: 6vh; font-weight: bold;
+            color: #38bdf8; text-shadow: 0 0 2vh rgba(56,189,248,0.5);
+            background: #0f172a; padding: 2vh 3vw; border-radius: 2vh; border: 0.3vh solid #38bdf8; 
+            width: 90%; margin-bottom: 2vh;
         }
 
-        /* Controls for x - Diperbesar Raksasa */
+        /* Kontrol [+] dan [-] */
         .value-control {
-            display: flex; justify-content: center; align-items: center; gap: 30px;
-            background: #1e293b; border-radius: 50px; padding: 15px 20px; border: 3px solid #334155;
-            width: 100%; max-width: 450px; margin-top: 15px;
+            display: flex; justify-content: center; align-items: center; gap: 3vw;
+            background: #1e293b; border-radius: 5vh; padding: 1.5vh 2vw; border: 0.4vh solid #334155;
+            width: 90%; margin-top: 1vh;
         }
         .val-btn {
-            background: #ef4444; color: white; border: 4px solid #b91c1c; width: 90px; height: 90px;
-            border-radius: 50%; font-size: 4rem; font-weight: bold; cursor: pointer; touch-action: manipulation;
-            display: flex; justify-content: center; align-items: center; box-shadow: 0 8px 15px rgba(0,0,0,0.4);
-            transition: 0.1s;
+            background: #ef4444; color: white; border: 0.5vh solid #b91c1c; 
+            width: 12vh; height: 12vh; /* Lebar & Tinggi menyesuaikan tinggi layar */
+            border-radius: 50%; font-size: 7vh; font-weight: bold; cursor: pointer; touch-action: manipulation;
+            display: flex; justify-content: center; align-items: center; box-shadow: 0 1vh 1.5vh rgba(0,0,0,0.4);
         }
         .val-btn.plus { background: #22c55e; border-color: #15803d;}
         .val-btn:active { transform: scale(0.9); }
-        .val-display { font-size: 4rem; font-weight: 900; width: 100px; text-align: center; color: #fbbf24; font-family: 'Fira Code', monospace; text-shadow: 0 5px 10px rgba(0,0,0,0.5);}
+        .val-display { font-size: 7vh; font-weight: 900; width: 12vw; text-align: center; color: #fbbf24; font-family: 'Fira Code', monospace;}
 
-        /* Real-time Calculation Panel */
-        .calc-panel {
-            background: #1e293b; border-radius: 15px; padding: 25px;
-            font-family: 'Fira Code', monospace; font-size: 1.8rem; color: #94a3b8;
-            height: 100%; display: flex; flex-direction: column; justify-content: center;
-            border: 3px dashed #475569; text-align: left; line-height: 1.8;
+        /* Kanan: Pengecekan */
+        .vault-right { 
+            flex: 1; background: #1e293b; border-radius: 3vh; padding: 3vh;
+            border: 0.4vh dashed #475569; display: flex; flex-direction: column; justify-content: center;
+            text-align: left;
         }
-        .calc-highlight { color: #f8fafc; font-weight: bold; background: #334155; padding: 2px 10px; border-radius: 8px;}
-        .calc-result { font-size: 2.2rem; color: #22c55e; margin-top: 15px; background: rgba(34,197,94,0.1); padding: 10px 15px; border-radius: 10px; border-left: 5px solid #22c55e; display: inline-block;}
+        .calc-panel { font-family: 'Fira Code', monospace; font-size: 2.5vh; color: #94a3b8; line-height: 2; }
+        .calc-highlight { color: #f8fafc; font-weight: bold; background: #334155; padding: 0.5vh 1vw; border-radius: 1vh;}
+        .calc-result { font-size: 3vh; color: #22c55e; margin-top: 2vh; background: rgba(34,197,94,0.1); padding: 1.5vh; border-radius: 1.5vh; border-left: 0.6vh solid #22c55e; display: inline-block;}
         .calc-wrong { color: #ef4444; background: rgba(239,68,68,0.1); border-left-color: #ef4444;}
 
-        /* Responsivitas untuk layar vertikal (Bila dibuka di Tablet/HP) */
-        @media (max-width: 900px) {
-            .vault-container { grid-template-columns: 1fr; gap: 20px; }
-            .equation-display { font-size: 2.5rem; }
-            .val-btn { width: 70px; height: 70px; font-size: 3rem; }
-            .val-display { font-size: 3rem; }
-            .calc-panel { font-size: 1.3rem; text-align: center; }
-        }
-
-        /* Toast Loading */
+        /* Loading */
         #loadingToast {
             display: none; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
-            background: rgba(0,0,0,0.9); padding: 30px 40px; border-radius: 15px; font-size: 1.8rem; font-weight: bold; z-index: 100;
-            border: 2px solid #fbbf24; box-shadow: 0 0 30px rgba(251, 191, 36, 0.5);
+            background: rgba(0,0,0,0.9); padding: 3vh 4vw; border-radius: 2vh; font-size: 3vh; font-weight: bold; z-index: 100;
+            border: 0.3vh solid #fbbf24; box-shadow: 0 0 3vh rgba(251, 191, 36, 0.5);
         }
     </style>
 </head>
 <body>
 
     <!-- 1. LANDING SCREEN -->
-    <div id="landingScreen" class="panel active-screen">
-        <h1>🔐 Misi Brankas Rahasia 🔐</h1>
-        <h2 style="font-size: 2.2rem; color: #94a3b8;">Persamaan Linier Satu Variabel (PLSV)</h2>
-        <p style="font-size: 1.5rem; color: #e2e8f0; margin-bottom: 30px;">Gunakan layar sentuh ini untuk mencari "Kode Rahasia" (nilai <strong>x</strong>) yang dapat menyeimbangkan persamaan aljabar dan membuka brankas baja!</p>
-        
-        <div class="input-group">
-            <label>Masukkan Nama Detektif:</label>
-            <input type="text" id="playerName" placeholder="Ketik nama Anda di sini..." autocomplete="off">
+    <div id="landingScreen" class="panel active-screen" style="justify-content: center;">
+        <div>
+            <h1>🔐 Misi Brankas Rahasia 🔐</h1>
+            <h2>Persamaan Linier Satu Variabel (PLSV)</h2>
+            <p>Gunakan layar sentuh ini untuk mencari "Kode Rahasia" (nilai <strong>x</strong>)<br>yang dapat menyeimbangkan persamaan aljabar dan membuka brankas baja!</p>
+            
+            <div class="input-group">
+                <label>Masukkan Nama Detektif:</label>
+                <input type="text" id="playerName" placeholder="Sentuh di sini untuk mengetik nama..." autocomplete="off">
+            </div>
+            
+            <button class="btn success" onclick="startGame()">Mulai Meretas Brankas 🚀</button>
         </div>
-        
-        <button class="btn success" style="padding: 25px; font-size: 2rem; width: 100%;" onclick="startGame()">Mulai Meretas Brankas 🚀</button>
     </div>
 
     <!-- 2. GAME SCREEN -->
     <div id="gameScreen" class="panel">
         <div class="hud">
             <div>Misi: <span id="levelDisplay" style="color:#38bdf8;">1</span> / 4</div>
-            <div class="hud-score">Skor: <span id="scoreDisplay" style="font-size: 2.2rem;">0</span></div>
+            <div class="hud-score">Skor: <span id="scoreDisplay">0</span></div>
         </div>
 
-        <div class="vault-container">
-            <!-- Kolom Kiri: Interaksi -->
+        <div class="game-content">
+            <!-- Kiri: Kontrol Persamaan -->
             <div class="vault-left">
-                <div style="font-size: 1.3rem; color: #94a3b8; margin-bottom: 5px; font-weight: 900; text-transform: uppercase;">Persamaan Kunci:</div>
+                <div style="font-size: 2vh; color: #94a3b8; margin-bottom: 1vh; font-weight: 900; text-transform: uppercase;">Persamaan Kunci:</div>
                 <div class="equation-display" id="equationDisplay">2x + 5 = 15</div>
 
-                <div style="font-size: 1.3rem; color: #f8fafc; margin-top: 15px; font-weight: 900;">Atur Tebakan Nilai <span style="color:#fbbf24; font-size:2rem;">x</span>:</div>
+                <div style="font-size: 2.5vh; color: #f8fafc; margin-top: 2vh; font-weight: 900;">Atur Tebakan Nilai <span style="color:#fbbf24; font-size:4vh;">x</span>:</div>
                 <div class="value-control">
                     <button class="val-btn" onclick="adjustX(-1)">-</button>
                     <div class="val-display" id="valX">0</div>
@@ -169,28 +169,31 @@
                 </div>
             </div>
 
-            <!-- Kolom Kanan: Pengecekan Aljabar -->
+            <!-- Kanan: Pengecekan Aljabar -->
             <div class="vault-right">
                 <div class="calc-panel" id="calcPanel">
-                    <!-- Proses Substitusi Otomatis Muncul di Sini -->
+                    <!-- Proses Substitusi Otomatis -->
                 </div>
             </div>
         </div>
 
-        <button class="btn warning" id="btnUnlock" onclick="unlockVault()" style="width: 100%; font-size: 2.2rem; padding: 25px; letter-spacing: 3px;">🔓 BUKA BRANKAS SEKARANG</button>
+        <!-- Tombol Utama di Bawah -->
+        <button class="btn warning" id="btnUnlock" onclick="unlockVault()" style="font-size: 3.5vh; letter-spacing: 0.2vw;">🔓 BUKA BRANKAS SEKARANG</button>
     </div>
 
     <!-- 3. END SCREEN -->
-    <div id="endScreen" class="panel">
-        <h1 style="font-size: 6rem; margin-bottom: 10px;">🏆</h1>
-        <h1 style="color: #10b981; font-size: 4rem;">Brankas Terbuka Semua!</h1>
-        <h2 style="font-size: 2.5rem; color: #e2e8f0; margin-bottom: 30px;">Skor Akhir: <span id="finalScore" style="color: #38bdf8; font-size: 4rem;">0</span></h2>
-        
-        <div style="background: #1e293b; padding: 20px; border-radius: 15px; border: 2px solid #334155; margin-bottom: 30px;">
-            <p id="saveStatus" style="font-weight: 900; color: #fbbf24; font-size: 1.8rem; margin: 0;">Mengirim data ke server guru... 📡</p>
+    <div id="endScreen" class="panel" style="justify-content: center;">
+        <div>
+            <h1 style="font-size: 10vh; margin-bottom: 2vh;">🏆</h1>
+            <h1 style="color: #10b981;">Brankas Terbuka Semua!</h1>
+            <h2>Skor Akhir: <span id="finalScore" style="color: #38bdf8; font-size: 6vh;">0</span></h2>
+            
+            <div style="background: #1e293b; padding: 3vh; border-radius: 2vh; border: 0.4vh solid #334155; margin: 4vh 0;">
+                <p id="saveStatus" style="font-weight: 900; color: #fbbf24; font-size: 3vh; margin: 0;">Mengirim data ke server guru... 📡</p>
+            </div>
+            
+            <button class="btn success" style="display:none;" id="btnRestart" onclick="location.reload()">Selesai & Main Lagi</button>
         </div>
-        
-        <button class="btn success" style="display:none; font-size: 2rem; padding: 20px 40px; width: 100%;" id="btnRestart" onclick="location.reload()">Selesai & Main Lagi</button>
     </div>
 
     <div id="loadingToast">Menyimpan data ke Jaringan... ⏳</div>
@@ -198,9 +201,8 @@
     <script>
         // ==========================================
         // KONFIGURASI GOOGLE APPS SCRIPT
-        // Tautan App Script Anda telah diatur di sini
-        // ==========================================
         const GOOGLE_APP_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyajyGFQegbygoZ2GmuhT6TbvDJN4hSl_9RdJtV9xLO7cL6imjFCHvvqAjbSQQk3zrv/exec"; 
+        // ==========================================
 
         // --- AUDIO ENGINE ---
         const AudioContext = window.AudioContext || window.webkitAudioContext;
@@ -221,191 +223,90 @@
                 osc.type = 'sine'; osc.frequency.setValueAtTime(800, audioCtx.currentTime);
                 osc.frequency.exponentialRampToValueAtTime(300, audioCtx.currentTime + 0.1);
                 gain.gain.setValueAtTime(0.3, audioCtx.currentTime);
-                gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.1);
-                osc.start(); osc.stop(audioCtx.currentTime + 0.1);
-            } else if (type === 'success') {
-                osc.type = 'square'; osc.frequency.setValueAtTime(400, audioCtx.currentTime);
-                osc.frequency.setValueAtTime(600, audioCtx.currentTime + 0.1);
-                osc.frequency.setValueAtTime(1000, audioCtx.currentTime + 0.2);
-                gain.gain.setValueAtTime(0.2, audioCtx.currentTime);
-                gain.gain.linearRampToValueAtTime(0, audioCtx.currentTime + 0.5);
-                osc.start(); osc.stop(audioCtx.currentTime + 0.5);
-            } else if (type === 'error') {
-                osc.type = 'sawtooth'; osc.frequency.setValueAtTime(150, audioCtx.currentTime);
-                osc.frequency.exponentialRampToValueAtTime(80, audioCtx.currentTime + 0.3);
-                gain.gain.setValueAtTime(0.4, audioCtx.currentTime);
-                gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.4);
-                osc.start(); osc.stop(audioCtx.currentTime + 0.4);
-            }
+                gain.gain.exponentialRampToTentu, saya telah merombak total tata letaknya (layout). Alih-alih menggunakan ukuran piksel (`px`) yang sering terpotong di layar tertentu, saya sekarang menggunakan **Sistem Persentase Layar (Viewport Height/Width atau `vh/vw`) dan Flexbox ketat**. 
+
+Dengan desain ini:
+1. Layar permainan akan **mengunci tepat 96% dari tinggi dan lebar layar** Papan Interaktif (PID) Anda.
+2. Area header, area tengah (brankas), dan tombol besar di bawah **berbagi ruang secara otomatis**. Tombol "BUKA BRANKAS" dijamin tidak akan pernah tenggelam atau terpotong di bagian bawah.
+3. Ukuran tombol `[+]` dan `[-]` dibuat berdasarkan persentase tinggi layar, sehingga akan terlihat raksasa dan sangat mudah disentuh oleh siswa.
+
+URL Google Apps Script Anda juga sudah saya masukkan ke dalam kodenya. Silakan salin semua kode di bawah ini, simpan sebagai **`index.html`**, dan buka di PID Anda:
+
+```html
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Misi Brankas: PLSV (Optimasi PID)</title>
+    <style>
+        @import url('[https://fonts.googleapis.com/css2?family=Nunito:wght@700;900&family=Fira+Code:wght@700&display=swap](https://fonts.googleapis.com/css2?family=Nunito:wght@700;900&family=Fira+Code:wght@700&display=swap)');
+
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Nunito', sans-serif; user-select: none; }
+
+        body {
+            background-color: #020617;
+            color: #f8fafc;
+            height: 100vh;
+            width: 100vw;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden; /* Mengunci layar agar tidak bisa di-scroll */
+            background-image: radial-gradient(circle at 50% 0%, #1e293b 0%, #020617 100%);
+            touch-action: none; /* Mencegah zoom tidak sengaja di layar sentuh */
         }
 
-        // Pasang suara ke tombol plus/minus
-        document.addEventListener('mousedown', function(e) {
-            if(e.target.classList.contains('val-btn') || e.target.classList.contains('btn')) {
-                if(audioCtx) playSound('click');
-            }
-        });
-
-        // Game Data & State
-        let playerName = "";
-        let score = 0;
-        let currentLevel = 1;
-        let xGuess = 0; // Nilai tebakan x awal
-
-        // Level Database: ax + b = c
-        const levels = [
-            { a: 1, b: 4, c: 10, eq: "x + 4 = 10" },      // x = 6
-            { a: 2, b: -3, c: 7, eq: "2x - 3 = 7" },      // x = 5
-            { a: -3, b: 12, c: 0, eq: "-3x + 12 = 0" },   // x = 4
-            { a: 4, b: 2, c: -10, eq: "4x + 2 = -10" }    // x = -3
-        ];
-
-        function showScreen(id) {
-            document.querySelectorAll('.panel').forEach(p => p.classList.remove('active-screen'));
-            document.getElementById(id).classList.add('active-screen');
+        .panel {
+            background: rgba(15, 23, 42, 0.95);
+            border-radius: 3vh;
+            width: 96vw;
+            height: 96vh;
+            display: none;
+            flex-direction: column;
+            border: 4px solid #334155;
+            padding: 2vh 2vw;
+            box-shadow: 0 0 50px rgba(0,0,0,0.8);
         }
 
-        function startGame() {
-            initAudio();
-            playerName = document.getElementById('playerName').value.trim();
-            if (!playerName) {
-                alert("Detektif, tolong masukkan nama Anda dengan menyentuh kotak teks!");
-                return;
-            }
-            score = 0; currentLevel = 1;
-            loadLevel();
-            showScreen('gameScreen');
+        .active-screen { display: flex; animation: fadeIn 0.4s ease-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: scale(0.98); } to { opacity: 1; transform: scale(1); } }
+
+        /* --- LAYAR AWAL & AKHIR --- */
+        .center-content {
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
+            height: 100%; text-align: center;
+        }
+        h1 { color: #38bdf8; font-size: 8vh; margin-bottom: 2vh; text-shadow: 0 0 20px rgba(56,189,248,0.4); }
+        h2 { color: #fbbf24; font-size: 4vh; margin-bottom: 3vh; }
+        p { font-size: 3vh; color: #cbd5e1; margin-bottom: 4vh; max-width: 80%; }
+        
+        .input-box {
+            width: 60%; background: #1e293b; padding: 3vh; border-radius: 2vh; border: 3px solid #475569; margin-bottom: 4vh;
+        }
+        .input-box label { display: block; font-size: 3vh; margin-bottom: 2vh; color: #94a3b8; }
+        .input-box input { 
+            width: 100%; padding: 2vh; font-size: 4vh; border-radius: 1.5vh; 
+            background: #0f172a; color: white; border: 3px solid #3b82f6; text-align: center; font-weight: 900;
         }
 
-        function loadLevel() {
-            let lvl = levels[currentLevel - 1];
-            xGuess = 0; // Reset tebakan setiap level
-            
-            document.getElementById('levelDisplay').innerText = currentLevel;
-            document.getElementById('scoreDisplay').innerText = score;
-            document.getElementById('equationDisplay').innerText = lvl.eq;
-            
-            let btn = document.getElementById('btnUnlock');
-            btn.disabled = false;
-            btn.innerText = "🔓 BUKA BRANKAS SEKARANG";
-            btn.className = "btn warning";
-            btn.style.boxShadow = "0 10px 20px rgba(245, 158, 11, 0.4)";
-
-            updateUI();
+        /* --- LAYAR PERMAINAN UTAMA --- */
+        /* 1. HUD (Atas) - Tinggi Tetap */
+        .hud {
+            flex: 0 0 8vh; /* Mengunci tinggi header */
+            display: flex; justify-content: space-between; align-items: center;
+            background: #020617; padding: 0 3vw; border-radius: 2vh; border: 2px solid #334155;
+            font-size: 3.5vh; font-weight: 900; color: #94a3b8; margin-bottom: 2vh;
         }
+        .hud span { color: #38bdf8; }
+        .hud .score span { color: #fbbf24; }
 
-        function adjustX(amount) {
-            initAudio();
-            playSound('click');
-            xGuess += amount;
-            updateUI();
+        /* 2. Area Brankas (Tengah) - Fleksibel mengisi sisa ruang */
+        .vault-container {
+            flex: 1 1 auto; /* Mengisi sisa layar yang tersedia */
+            display: flex; flex-direction: row; gap: 2vw;
+            min-height: 0; /* Penting agar tidak meluap */
         }
-
-        function updateUI() {
-            document.getElementById('valX').innerText = xGuess;
-            
-            let lvl = levels[currentLevel - 1];
-            let a = lvl.a;
-            let b = lvl.b;
-            let targetC = lvl.c;
-
-            // Proses Substitusi Real-time
-            let bStr = b >= 0 ? `+ ${b}` : `- ${Math.abs(b)}`;
-            let axValue = a * xGuess;
-            let currentTotal = axValue + b;
-
-            let calcHTML = `Substitusi <span style="color:#fbbf24">x = ${xGuess}</span> ke persamaan:<br><br>`;
-            calcHTML += `➡ <span class="calc-highlight">${a} (${xGuess})</span> ${bStr} = ${targetC}<br>`;
-            calcHTML += `➡ <span class="calc-highlight">${axValue} ${bStr}</span> = ${targetC}<br>`;
-            
-            if (currentTotal === targetC) {
-                calcHTML += `<span class="calc-result">✅ ${currentTotal} = ${targetC} (SEIMBANG)</span>`;
-                // Efek visual tombol siap ditekan
-                document.getElementById('btnUnlock').style.boxShadow = "0 0 30px rgba(34,197,94,0.9)";
-            } else {
-                calcHTML += `<span class="calc-result calc-wrong">❌ ${currentTotal} ≠ ${targetC} (Belum Cocok)</span>`;
-                document.getElementById('btnUnlock').style.boxShadow = "0 10px 20px rgba(245, 158, 11, 0.4)";
-            }
-
-            document.getElementById('calcPanel').innerHTML = calcHTML;
-        }
-
-        function unlockVault() {
-            let lvl = levels[currentLevel - 1];
-            let currentTotal = (lvl.a * xGuess) + lvl.b;
-            
-            let btn = document.getElementById('btnUnlock');
-            btn.disabled = true;
-
-            if (currentTotal === lvl.c) {
-                // Jawaban Benar
-                playSound('success');
-                btn.className = "btn success";
-                btn.innerText = "✅ BRANKAS TERBUKA!";
-                score += 25; // 4 level x 25 = 100
-                document.getElementById('scoreDisplay').innerText = score;
-                
-                setTimeout(() => {
-                    if (currentLevel < levels.length) {
-                        currentLevel++;
-                        loadLevel();
-                    } else {
-                        finishGame();
-                    }
-                }, 1800);
-            } else {
-                // Jawaban Salah
-                playSound('error');
-                btn.className = "btn danger";
-                btn.innerText = "❌ AKSES DITOLAK! COBA LAGI";
-                score = Math.max(0, score - 5); // Penalti 5 poin
-                document.getElementById('scoreDisplay').innerText = score;
-
-                setTimeout(() => {
-                    btn.disabled = false;
-                    btn.className = "btn warning";
-                    btn.innerText = "🔓 BUKA BRANKAS SEKARANG";
-                }, 1500);
-            }
-        }
-
-        function finishGame() {
-            document.getElementById('finalScore').innerText = score;
-            showScreen('endScreen');
-            saveDataToGoogleSheets();
-        }
-
-        // --- GOOGLE SHEETS INTEGRATION (API POST) ---
-        function saveDataToGoogleSheets() {
-            document.getElementById('loadingToast').style.display = "block";
-
-            const dataToSave = {
-                action: 'save',
-                nama: playerName,
-                skor: score,
-                level: currentLevel
-            };
-
-            fetch(GOOGLE_APP_SCRIPT_URL, {
-                method: 'POST',
-                mode: 'no-cors', 
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(dataToSave)
-            })
-            .then(() => {
-                document.getElementById('loadingToast').style.display = "none";
-                document.getElementById('saveStatus').innerText = "✅ Data berhasil tersimpan di Google Sheets Guru!";
-                document.getElementById('saveStatus').style.color = "#22c55e";
-                document.getElementById('btnRestart').style.display = "inline-block";
-            })
-            .catch(error => {
-                document.getElementById('loadingToast').style.display = "none";
-                document.getElementById('saveStatus').innerText = "❌ Gagal menyimpan data. Cek koneksi internet Papan Interaktif.";
-                document.getElementById('saveStatus').style.color = "#ef4444";
-                document.getElementById('btnRestart').style.display = "inline-block";
-                console.error("Error:", error);
-            });
-        }
-    </script>
-</body>
-</html>
+        
+        .vault-col {
+            flex: 1; background: #020617; border-radius: 2vh; border: 4
