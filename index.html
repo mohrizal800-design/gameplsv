@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Misi Brankas: PLSV</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;900&family=Fira+Code:wght@500;700&display=swap');
+
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Nunito', sans-serif; }
+
+        body {
+            background-color: #0f172a;
+            color: #f8fafc;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            background-image: radial-gradient(circle at 50% 0%, #1e293b 0%, #020617 100%);
+        }
+
+        .panel {
+            background: rgba(15, 23, 42, 0.9);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 25px 50px -12px rgba(0,0,0,0.8), inset 0 0 20px rgba(56,189,248,0.2);
+            text-align: center;
+            max-width: 800px;
+            width: 95%;
+            display: none;
+            flex-direction: column;
+            border: 2px solid #334155;
+            position: relative;
+        }
+
+        .active-screen { display: flex; animation: slideUp 0.5s ease-out; }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+
+        h1 { color: #38bdf8; font-size: 2.5rem; margin-bottom: 10px; }
+        h2 { color: #fbbf24; font-size: 1.8rem; margin-bottom: 15px; }
+
+        .btn {
+            background: linear-gradient(135deg, #2563eb, #1e40af);
+            color: white; border: none; padding: 15px 30px; font-size: 1.3rem;
+            border-radius: 50px; cursor: pointer; font-weight: 900;
+            transition: all 0.2s; box-shadow: 0 10px 20px rgba(37,99,235,0.3);
+            text-transform: uppercase; margin: 10px 0; touch-action: manipulation;
+        }
+        .btn:active { transform: scale(0.95); }
+        .btn.success { background: linear-gradient(135deg, #10b981, #047857); }
+        .btn.warning { background: linear-gradient(135deg, #f59e0b, #b45309); }
+        .btn:disabled { background: #334155; color: #94a3b8; cursor: not-allowed; box-shadow: none;}
+        
+        .input-group { margin-bottom: 20px; text-align: left; }
+        .input-group label { display: block; font-weight: bold; margin-bottom: 10px; font-size: 1.2rem;}
+        .input-group input { width: 100%; padding: 15px; border-radius: 10px; border: 2px solid #334155; font-size: 1.2rem; background: #1e293b; color: white;}
+
+        /* HUD */
+        .hud { display: flex; justify-content: space-between; margin-bottom: 15px; font-size: 1.2rem; font-weight: bold;}
+        .hud-score { color: #fbbf24; }
+
+        /* Game Area */
+        .vault-container {
+            background: #020617; border: 4px solid #475569; border-radius: 20px;
+            padding: 30px; margin-bottom: 20px; position: relative;
+            box-shadow: inset 0 0 30px rgba(0,0,0,0.8);
+        }
+
+        .equation-display {
+            font-family: 'Fira Code', monospace; font-size: 2.5rem; font-weight: bold;
+            color: #38bdf8; margin-bottom: 20px; letter-spacing: 2px;
+        }
+
+        /* Controls for x */
+        .value-control {
+            display: flex; justify-content: center; align-items: center; gap: 20px;
+            background: #0f172a; border-radius: 50px; padding: 10px; border: 2px solid #334155;
+            margin: 0 auto 20px auto; max-width: 400px;
+        }
+        .val-btn {
+            background: #ef4444; color: white; border: none; width: 60px; height: 60px;
+            border-radius: 50%; font-size: 2.5rem; font-weight: bold; cursor: pointer; touch-action: manipulation;
+            display: flex; justify-content: center; align-items: center; box-shadow: 0 5px 10px rgba(0,0,0,0.3);
+        }
+        .val-btn.plus { background: #22c55e; }
+        .val-btn:active { transform: scale(0.9); }
+        .val-display { font-size: 2.5rem; font-weight: bold; width: 80px; text-align: center; color: #fbbf24; font-family: 'Fira Code', monospace;}
+
+        /* Real-time Calculation Panel */
+        .calc-panel {
+            background: #1e293b; border-radius: 10px; padding: 15px;
+            font-family: 'Fira Code', monospace; font-size: 1.3rem; color: #94a3b8;
+            min-height: 80px; display: flex; flex-direction: column; justify-content: center;
+            border: 1px dashed #475569;
+        }
+        .calc-highlight { color: #f8fafc; font-weight: bold; }
+        .calc-result { font-size: 1.5rem; color: #22c55e; margin-top: 5px;}
+        .calc-wrong { color: #ef4444; }
+
+        /* Toast Loading */
+        #loadingToast {
+            display: none; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            background: rgba(0,0,0,0.8); padding: 20px; border-radius: 10px; font-size: 1.2rem; font-weight: bold; z-index: 100;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- 1. LANDING SCREEN -->
+    <div id="landingScreen" class="panel active-screen">
+        <h1 style="font-size: 3rem;">🔐 Brankas Rahasia</h1>
+        <h2>Persamaan Linier Satu Variabel</h2>
+        <p>Bantu temukan "Kode Rahasia" (nilai <strong>x</strong>) yang tepat untuk menyeimbangkan persamaan dan membuka brankas baja ini!</p>
+        
+        <div class="input-group">
+            <label>Masukkan Nama Detektif:</label>
+            <input type="text" id="playerName" placeholder="Contoh: Budi Susanto">
+        </div>
+        
+        <button class="btn success" style="padding: 20px; font-size: 1.5rem;" onclick="startGame()">Mulai Retas Brankas</button>
+    </div>
+
+    <!-- 2. GAME SCREEN -->
+    <div id="gameScreen" class="panel">
+        <div class="hud">
+            <div>Level: <span id="levelDisplay" style="color:#38bdf8;">1</span>/4</div>
+            <div class="hud-score">Skor: <span id="scoreDisplay">0</span></div>
+        </div>
+
+        <div class="vault-container">
+            <div style="font-size: 1rem; color: #94a3b8; margin-bottom: 5px; text-transform: uppercase; font-weight: bold;">Persamaan Brankas:</div>
+            <div class="equation-display" id="equationDisplay">2x + 5 = 15</div>
+
+            <div style="font-size: 1.1rem; color: #f8fafc; margin-bottom: 10px; font-weight: bold;">Atur Tebakan Nilai <span style="color:#fbbf24; font-size:1.5rem;">x</span>:</div>
+            <div class="value-control">
+                <button class="val-btn" onclick="adjustX(-1)">-</button>
+                <div class="val-display" id="valX">0</div>
+                <button class="val-btn plus" onclick="adjustX(1)">+</button>
+            </div>
+
+            <div class="calc-panel" id="calcPanel">
+                <!-- Proses Substitusi Otomatis -->
+            </div>
+        </div>
+
+        <button class="btn warning" id="btnUnlock" onclick="unlockVault()" style="width: 100%; font-size: 1.6rem; padding: 20px;">🔓 BUKA BRANKAS</button>
+    </div>
+
+    <!-- 3. END SCREEN -->
+    <div id="endScreen" class="panel">
+        <h1 style="font-size: 5rem; margin-bottom: 0;">🏆</h1>
+        <h1 style="color: #10b981;">Brankas Terbuka Semua!</h1>
+        <h2>Skor Akhir: <span id="finalScore" style="color: #38bdf8; font-size: 3rem;">0</span></h2>
+        <p id="saveStatus" style="font-weight: bold; color: #fbbf24; font-size: 1.2rem;">Menyimpan data ke server guru...</p>
+        
+        <button class="btn" style="display:none; font-size: 1.5rem; padding: 15px 30px;" id="btnRestart" onclick="location.reload()">Main Lagi</button>
+    </div>
+
+    <div id="loadingToast">Menyimpan data... ⏳</div>
+
+    <script>
+        // ==========================================
+        // KONFIGURASI GOOGLE APPS SCRIPT
+        // Tautan App Script Anda telah diatur di sini
+        // ==========================================
+        const GOOGLE_APP_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyajyGFQegbygoZ2GmuhT6TbvDJN4hSl_9RdJtV9xLO7cL6imjFCHvvqAjbSQQk3zrv/exec"; 
+
+        // Game Data & State
+        let playerName = "";
+        let score = 0;
+        let currentLevel = 1;
+        let xGuess = 0; // Nilai tebakan x awal
+
+        // Level Database: ax + b = c
+        const levels = [
+            { a: 1, b: 4, c: 10, eq: "x + 4 = 10" },      // x = 6
+            { a: 2, b: -3, c: 7, eq: "2x - 3 = 7" },      // x = 5
+            { a: -3, b: 12, c: 0, eq: "-3x + 12 = 0" },   // x = 4
+            { a: 4, b: 2, c: -10, eq: "4x + 2 = -10" }    // x = -3
+        ];
+
+        function showScreen(id) {
+            document.querySelectorAll('.panel').forEach(p => p.classList.remove('active-screen'));
+            document.getElementById(id).classList.add('active-screen');
+        }
+
+        function startGame() {
+            playerName = document.getElementById('playerName').value.trim();
+            if (!playerName) {
+                alert("Detektif, tolong masukkan nama Anda!");
+                return;
+            }
+            score = 0; currentLevel = 1;
+            loadLevel();
+            showScreen('gameScreen');
+        }
+
+        function loadLevel() {
+            let lvl = levels[currentLevel - 1];
+            xGuess = 0; // Reset tebakan setiap level
+            
+            document.getElementById('levelDisplay').innerText = currentLevel;
+            document.getElementById('scoreDisplay').innerText = score;
+            document.getElementById('equationDisplay').innerText = lvl.eq;
+            document.getElementById('btnUnlock').disabled = false;
+            document.getElementById('btnUnlock').innerText = "🔓 BUKA BRANKAS";
+            document.getElementById('btnUnlock').className = "btn warning";
+
+            updateUI();
+        }
+
+        function adjustX(amount) {
+            xGuess += amount;
+            updateUI();
+        }
+
+        function updateUI() {
+            document.getElementById('valX').innerText = xGuess;
+            
+            let lvl = levels[currentLevel - 1];
+            let a = lvl.a;
+            let b = lvl.b;
+            let targetC = lvl.c;
+
+            // Proses Substitusi Real-time
+            let bStr = b >= 0 ? `+ ${b}` : `- ${Math.abs(b)}`;
+            let axValue = a * xGuess;
+            let currentTotal = axValue + b;
+
+            let calcHTML = `Pengecekan: <span class="calc-highlight">${a}(${xGuess}) ${bStr}</span><br>`;
+            calcHTML += `➡ ${axValue} ${bStr} = <span class="calc-highlight">${currentTotal}</span><br>`;
+            
+            if (currentTotal === targetC) {
+                calcHTML += `<span class="calc-result">✅ ${currentTotal} = ${targetC} (KESEIMBANGAN TERCAPAI!)</span>`;
+                // Visual feedback tombol bisa ditekan
+                document.getElementById('btnUnlock').style.boxShadow = "0 0 20px rgba(34,197,94,0.8)";
+            } else {
+                calcHTML += `<span class="calc-result calc-wrong">❌ ${currentTotal} ≠ ${targetC} (Belum Seimbang)</span>`;
+                document.getElementById('btnUnlock').style.boxShadow = "0 10px 20px rgba(245, 158, 11, 0.3)";
+            }
+
+            document.getElementById('calcPanel').innerHTML = calcHTML;
+        }
+
+        function unlockVault() {
+            let lvl = levels[currentLevel - 1];
+            let currentTotal = (lvl.a * xGuess) + lvl.b;
+            
+            let btn = document.getElementById('btnUnlock');
+            btn.disabled = true;
+
+            if (currentTotal === lvl.c) {
+                // Jawaban Benar
+                btn.className = "btn success";
+                btn.innerText = "✅ BERHASIL TERBUKA!";
+                score += 25; // 4 level x 25 = 100
+                document.getElementById('scoreDisplay').innerText = score;
+                
+                setTimeout(() => {
+                    if (currentLevel < levels.length) {
+                        currentLevel++;
+                        loadLevel();
+                    } else {
+                        finishGame();
+                    }
+                }, 1500);
+            } else {
+                // Jawaban Salah
+                btn.className = "btn danger";
+                btn.innerText = "❌ AKSES DITOLAK!";
+                score = Math.max(0, score - 5); // Penalti
+                document.getElementById('scoreDisplay').innerText = score;
+
+                setTimeout(() => {
+                    btn.disabled = false;
+                    btn.className = "btn warning";
+                    btn.innerText = "🔓 BUKA BRANKAS";
+                }, 1500);
+            }
+        }
+
+        function finishGame() {
+            document.getElementById('finalScore').innerText = score;
+            showScreen('endScreen');
+            saveDataToGoogleSheets();
+        }
+
+        // --- GOOGLE SHEETS INTEGRATION (API POST) ---
+        function saveDataToGoogleSheets() {
+            if (!GOOGLE_APP_SCRIPT_URL || GOOGLE_APP_SCRIPT_URL === "MASUKKAN_URL_WEB_APP_ANDA_DISINI") {
+                document.getElementById('saveStatus').innerText = "Data tidak disimpan. URL belum dikonfigurasi.";
+                document.getElementById('btnRestart').style.display = "inline-block";
+                return;
+            }
+
+            document.getElementById('loadingToast').style.display = "block";
+
+            const dataToSave = {
+                action: 'save',
+                nama: playerName,
+                skor: score,
+                level: currentLevel
+            };
+
+            fetch(GOOGLE_APP_SCRIPT_URL, {
+                method: 'POST',
+                mode: 'no-cors', 
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(dataToSave)
+            })
+            .then(() => {
+                document.getElementById('loadingToast').style.display = "none";
+                document.getElementById('saveStatus').innerText = "✅ Data berhasil disimpan ke Google Sheets Guru!";
+                document.getElementById('saveStatus').style.color = "#22c55e";
+                document.getElementById('btnRestart').style.display = "inline-block";
+            })
+            .catch(error => {
+                document.getElementById('loadingToast').style.display = "none";
+                document.getElementById('saveStatus').innerText = "❌ Gagal menyimpan data. Pastikan koneksi internet aktif.";
+                document.getElementById('saveStatus').style.color = "#ef4444";
+                document.getElementById('btnRestart').style.display = "inline-block";
+                console.error("Error:", error);
+            });
+        }
+    </script>
+</body>
+</html>
